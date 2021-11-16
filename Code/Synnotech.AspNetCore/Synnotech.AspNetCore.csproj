@@ -1,9 +1,43 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
         <TargetFrameworks>netstandard2.0;net6.0</TargetFrameworks>
+        <Version>0.1.0</Version>
         <Nullable>enable</Nullable>
         <LangVersion>10.0</LangVersion>
+        <OutputType>Library</OutputType>
+        <IsPackable>true</IsPackable>
+        <ImplicitUsings>false</ImplicitUsings>
+        <Authors>Synnotech AG</Authors>
+        <Company>Synnotech AG</Company>
+        <Copyright>Copyright © Synnotech AG 2021</Copyright>
+        <Description>Provides extensions for Synnotech ASP.NET Core apps that use LightInject, Serilog, and FluentValidation.</Description>
+        <TreatWarningsAsErrors Condition="'$(Configuration)' == 'Release'">true</TreatWarningsAsErrors>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <PackageIcon>synnotech-logo.png</PackageIcon>
+        <PackageProjectUrl>https://github.com/Synnotech-AG/Synnotech.AspNetCore</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/Synnotech-AG/Synnotech.AspNetCore.git</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageReleaseNotes>
+Synnotech.AspNetCore 0.1.0
+-----------------------------
+        </PackageReleaseNotes>
     </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="LightInject.Microsoft.DependencyInjection" Version="3.4.0" />
+        <PackageReference Include="Light.GuardClauses" Version="9.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="6.0.0" Condition="'$(TargetFramework)' == 'netstandard2.0'" />
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="all" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="../../synnotech-logo.png" Pack="true" PackagePath="\" />
+    </ItemGroup>
 
 </Project>
