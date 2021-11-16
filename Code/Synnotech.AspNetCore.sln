@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30114.105
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Synnotech.AspNetCore", "Synnotech.AspNetCore\Synnotech.AspNetCore.csproj", "{3F873FC0-F499-41FE-93C5-132A75E17B58}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Synnotech.AspNetCore.Tests", "Synnotech.AspNetCore.Tests\Synnotech.AspNetCore.Tests.csproj", "{6A605FE1-401B-480F-8D9A-3CFC2948764D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3F873FC0-F499-41FE-93C5-132A75E17B58}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F873FC0-F499-41FE-93C5-132A75E17B58}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F873FC0-F499-41FE-93C5-132A75E17B58}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F873FC0-F499-41FE-93C5-132A75E17B58}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6A605FE1-401B-480F-8D9A-3CFC2948764D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A605FE1-401B-480F-8D9A-3CFC2948764D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6A605FE1-401B-480F-8D9A-3CFC2948764D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6A605FE1-401B-480F-8D9A-3CFC2948764D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
