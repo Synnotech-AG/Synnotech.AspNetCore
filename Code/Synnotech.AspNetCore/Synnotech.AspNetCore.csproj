@@ -32,6 +32,7 @@ Synnotech.AspNetCore 0.1.0
     <ItemGroup>
         <PackageReference Include="LightInject.Microsoft.DependencyInjection" Version="3.4.0" />
         <PackageReference Include="Light.GuardClauses" Version="9.0.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
         <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="6.0.0" Condition="'$(TargetFramework)' == 'netstandard2.0'" />
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="all" />
     </ItemGroup>

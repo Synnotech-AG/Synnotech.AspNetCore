@@ -12,7 +12,7 @@ namespace Synnotech.AspNetCore;
 /// <summary>
 /// Provides members to add LightInject to your ASP.NET Core app.
 /// </summary>
-public static class DependencyInjection
+public static class LightInjectDependencyInjection
 {
     /// <summary>
     /// Creates a <see cref="ServiceContainer"/> with the default Microsoft settings.
