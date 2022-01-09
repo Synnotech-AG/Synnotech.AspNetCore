@@ -9,7 +9,7 @@ namespace Synnotech.AspNetCore.VersionValidation
     /// <summary>
     /// Middleware that compares the app version to the request version which is read from a http header.
     /// Produces 400 if app version header is missing and options are configured to disallow such requests.
-    /// Produces 400 if request version and app version validation based on validation mode fails.
+    /// Produces 400 if request version validation against app version fails.
     /// </summary>
     public sealed class VersionValidationMiddleware
     {
@@ -31,7 +31,7 @@ namespace Synnotech.AspNetCore.VersionValidation
             // Retrieve request version based on header
             if (!context.Request.Headers.TryGetValue(_options.VersionHeaderName, out var requestVersionHeader))
             {
-                if (!_options.AllowUnknownVersionRequests)
+                if (!_options.IsValidationOptional)
                 {
                     context.Response.StatusCode = 400;
                     await context.Response.WriteAsync("AppVersion Header is missing");
@@ -46,71 +46,20 @@ namespace Synnotech.AspNetCore.VersionValidation
 
                 if (appVersion != null)
                 {
-                    var validationError = ValidateVersions(appVersion, requestVersion);
-                    if (validationError != null)
+                    var checkVersionError = _options.CompareVersions ?? VersionValidation.ResolveVersionValidationFunc(_options.ValidationMode);
+                    var data = new VersionCompareData(appVersion, requestVersion);
+                    var error = checkVersionError(data);
+
+                    if (error != null)
                     {
                         context.Response.StatusCode = 400;
-                        await context.Response.WriteAsync("Version validation problem: " + validationError);
+                        await context.Response.WriteAsync("Version validation problem: " + error);
                         return;
                     }
                 }
             }
 
             await _next.Invoke(context);
-        }
-
-        private string? ValidateVersions(string appVersionString, string requestVersionString)
-        {
-            // Execute custom validation logic if set
-            if (_options.CompareVersions != null)
-            {
-                var data = new VersionCompareData(appVersionString, requestVersionString);
-                var success = _options.CompareVersions(data);
-                return success ? null : "Custom validation of request version and app version failed";
-            }
-
-
-            // Validate versions based on validation mode
-            var requestVersion = new Version(requestVersionString);
-            var appVersion = new Version(appVersionString);
-
-            switch (_options.ValidationMode)
-            {
-                case VersionValidationMode.ExactMatch:
-                    if (requestVersion != appVersion)
-                    {
-                        return "Request version is not equal to app version";
-                    }
-                    break;
-                case VersionValidationMode.AllowOlderOrEqual:
-                    if (requestVersion >= appVersion)
-                    {
-                        return "Request version is not lower than or equal to app version";
-                    }
-                    break;
-                case VersionValidationMode.AllowNewerOrEqual:
-                    if (requestVersion <= appVersion)
-                    {
-                        return "Request version is not newer than or equal to app version";
-                    }
-                    break;
-                case VersionValidationMode.AllowOlder:
-                    if (requestVersion > appVersion)
-                    {
-                        return "Request version is not lower than app version";
-                    }
-                    break;
-                case VersionValidationMode.AllowNewer:
-                    if (requestVersion < appVersion)
-                    {
-                        return "Request version is not newer than app version";
-                    }
-                    break;
-                default:
-                    throw new NotImplementedException();
-            }
-
-            return null;
         }
 
         private static string? TryGetProductVersion()

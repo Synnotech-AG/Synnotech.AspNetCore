@@ -20,7 +20,7 @@ public sealed class VersionValidationOptions
     /// <summary>
     /// Gets or sets a boolean which indicates if the middleware should return a BadRequest when a request does not contain the request version in the header named <see cref="VersionHeaderName"/>.
     /// </summary>
-    public bool AllowUnknownVersionRequests { get; set; } = true;
+    public bool IsValidationOptional { get; set; } = false;
 
     /// <summary>
     /// Gets or sets the func to resolve the application version that should be compared to the http header version. If null the version is determined by the entry assembly product version.
@@ -29,6 +29,7 @@ public sealed class VersionValidationOptions
 
     /// <summary>
     /// Gets or sets the func to compare the http header version with the app version which is used instead of validation based on <see cref="ValidationMode"/>.
+    /// Returns null if no errors, otherwise returns the error message.
     /// </summary>
-    public Func<VersionCompareData, bool>? CompareVersions { get; set; }
+    public Func<VersionCompareData, string?>? CompareVersions { get; set; }
 }
