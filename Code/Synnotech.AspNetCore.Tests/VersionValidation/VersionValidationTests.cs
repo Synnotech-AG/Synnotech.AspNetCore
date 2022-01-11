@@ -1,13 +1,12 @@
-﻿using System;
+﻿using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Synnotech.AspNetCore.VersionValidation;
-using System.Threading.Tasks;
 using Xunit;
 
-namespace Synnotech.AspNetCore.Tests
+namespace Synnotech.AspNetCore.Tests.VersionValidation
 {
-    public class VersionValidationTests
+    public static class VersionValidationTests
     {
         private const string DefaultVersionHeaderName = "AppVersion";
 
@@ -15,19 +14,15 @@ namespace Synnotech.AspNetCore.Tests
         [InlineData(VersionValidationMode.ExactMatch, "1.0.0", "0.9.0", false, 400)]
         [InlineData(VersionValidationMode.ExactMatch, "1.0.0", "1.0.0", true, 200)]
         [InlineData(VersionValidationMode.ExactMatch, "1.0.0", "2.0.0", false, 400)]
-
         [InlineData(VersionValidationMode.AllowOlder, "1.0.0", "0.9.0", true, 200)]
         [InlineData(VersionValidationMode.AllowOlder, "1.0.0", "1.0.0", false, 400)]
         [InlineData(VersionValidationMode.AllowOlder, "1.0.0", "2.0.0", false, 400)]
-
         [InlineData(VersionValidationMode.AllowOlderOrEqual, "1.0.0", "0.9.0", true, 200)]
         [InlineData(VersionValidationMode.AllowOlderOrEqual, "1.0.0", "1.0.0", true, 200)]
         [InlineData(VersionValidationMode.AllowOlderOrEqual, "1.0.0", "2.0.0", false, 400)]
-
         [InlineData(VersionValidationMode.AllowNewer, "1.0.0", "0.9.0", false, 400)]
         [InlineData(VersionValidationMode.AllowNewer, "1.0.0", "1.0.0", false, 400)]
         [InlineData(VersionValidationMode.AllowNewer, "1.0.0", "2.0.0", true, 200)]
-
         [InlineData(VersionValidationMode.AllowNewerOrEqual, "1.0.0", "0.9.0", false, 400)]
         [InlineData(VersionValidationMode.AllowNewerOrEqual, "1.0.0", "1.0.0", true, 200)]
         [InlineData(VersionValidationMode.AllowNewerOrEqual, "1.0.0", "2.0.0", true, 200)]
@@ -52,7 +47,6 @@ namespace Synnotech.AspNetCore.Tests
         [Theory]
         [InlineData(true, false, true, 200)]
         [InlineData(true, true, true, 200)]
-
         [InlineData(false, false, false, 400)]
         [InlineData(false, true, true, 200)]
         public static async Task VersionValidation_CanBeOptional(bool isValidationOptional, bool isRequestVersionSet, bool shouldRequestBeProcessed, int expectedStatusCode)

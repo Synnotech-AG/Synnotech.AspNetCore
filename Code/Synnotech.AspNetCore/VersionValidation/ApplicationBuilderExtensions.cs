@@ -7,14 +7,14 @@ namespace Synnotech.AspNetCore.VersionValidation;
 /// <summary>
 /// Provides extension methods to add Version Validation to your ASP.NET Core app.
 /// </summary>
-public static class VersionValidationDependencyInjection
+public static class ApplicationBuilderExtensions
 {
     /// <summary>
     /// Configures the host builder to use Version Validation.
     /// </summary>
     /// <param name="app">The application builder that will be manipulated.</param>
     /// <param name="configureOptions">The action that lets you configure the options used by the middleware.</param>
-    /// <returns></returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="app"/> is null.</exception>
     public static IApplicationBuilder UseVersionValidation(this IApplicationBuilder app, Action<VersionValidationOptions>? configureOptions = null)
     {
         app.MustNotBeNull();

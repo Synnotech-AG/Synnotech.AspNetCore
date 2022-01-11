@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -7,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 namespace Synnotech.AspNetCore.VersionValidation
 {
     /// <summary>
-    /// Middleware that compares the app version to the request version which is read from a http header.
+    /// Middleware that compares the app version to the request version which is read from an http header.
     /// Produces 400 if app version header is missing and options are configured to disallow such requests.
     /// Produces 400 if request version validation against app version fails.
     /// </summary>
