@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Synnotech.AspNetCore.VersionValidation;
@@ -28,12 +29,9 @@ namespace Synnotech.AspNetCore.Tests.VersionValidation
         [InlineData(VersionValidationMode.AllowNewerOrEqual, "1.0.0", "2.0.0", true, 200)]
         public static async Task VersionValidation_ModeAlgorithmShouldWork(VersionValidationMode mode, string appVersion, string requestVersion, bool shouldRequestBeProcessed, int expectedStatusCode)
         {
-            var options = new VersionValidationOptions
-            {
-                ValidationMode = mode,
-                IsValidationOptional = false,
-                GetAppVersion = () => appVersion
-            };
+            var options = VersionValidationOptionsProvider.CreateDefaultOptions(Version.Parse(appVersion), mode);
+            options.IsValidationOptional = false;
+
             var (middleware, receiver) = CreateVersionValidationMiddleware(options);
             var httpContext = new DefaultHttpContext();
             httpContext.Request.Headers[DefaultVersionHeaderName] = requestVersion;
@@ -51,12 +49,9 @@ namespace Synnotech.AspNetCore.Tests.VersionValidation
         [InlineData(false, true, true, 200)]
         public static async Task VersionValidation_CanBeOptional(bool isValidationOptional, bool isRequestVersionSet, bool shouldRequestBeProcessed, int expectedStatusCode)
         {
-            var options = new VersionValidationOptions
-            {
-                ValidationMode = VersionValidationMode.ExactMatch,
-                IsValidationOptional = isValidationOptional,
-                GetAppVersion = () => "1.0.0"
-            };
+            var options = VersionValidationOptionsProvider.CreateDefaultOptions(Version.Parse("1.0.0"), VersionValidationMode.ExactMatch);
+            options.IsValidationOptional = isValidationOptional;
+
             var (middleware, receiver) = CreateVersionValidationMiddleware(options);
             var httpContext = new DefaultHttpContext();
             if (isRequestVersionSet)
@@ -75,13 +70,10 @@ namespace Synnotech.AspNetCore.Tests.VersionValidation
         [InlineData("Foo", "Bar", false, 400)]
         public static async Task VersionValidation_CanHeaderNameBeDifferent(string middlewareHeaderName, string requestHeaderName, bool shouldRequestBeProcessed, int expectedStatusCode)
         {
-            var options = new VersionValidationOptions
-            {
-                ValidationMode = VersionValidationMode.ExactMatch,
-                IsValidationOptional = false,
-                GetAppVersion = () => "1.0.0",
-                VersionHeaderName = middlewareHeaderName
-            };
+            var options = VersionValidationOptionsProvider.CreateDefaultOptions(Version.Parse("1.0.0"), VersionValidationMode.ExactMatch);
+            options.IsValidationOptional = false;
+            options.VersionHeaderName = middlewareHeaderName;
+
             var (middleware, receiver) = CreateVersionValidationMiddleware(options);
             var httpContext = new DefaultHttpContext();
             httpContext.Request.Headers[requestHeaderName] = "1.0.0";
@@ -95,16 +87,14 @@ namespace Synnotech.AspNetCore.Tests.VersionValidation
         [Fact]
         public static async Task VersionValidation_CanHaveCustomVersionValidation()
         {
-            var options = new VersionValidationOptions
+            var options = new VersionValidationOptions<string>("1.0.0", _ => null, v => v)
             {
-                ValidationMode = VersionValidationMode.ExactMatch,
-                IsValidationOptional = false,
-                GetAppVersion = () => "2.0.0",
-                CompareVersions = _ => null
+                IsValidationOptional = false
             };
+
             var (middleware, receiver) = CreateVersionValidationMiddleware(options);
             var httpContext = new DefaultHttpContext();
-            httpContext.Request.Headers[DefaultVersionHeaderName] = "1.0.0";
+            httpContext.Request.Headers[DefaultVersionHeaderName] = "2.0.0";
 
             await middleware.InvokeAsync(httpContext);
 
@@ -112,10 +102,10 @@ namespace Synnotech.AspNetCore.Tests.VersionValidation
             httpContext.Response.StatusCode.Should().Be(200);
         }
 
-        private static (VersionValidationMiddleware, RequestDelegateReceiver) CreateVersionValidationMiddleware(VersionValidationOptions options)
+        private static (VersionValidationMiddleware<T>, RequestDelegateReceiver) CreateVersionValidationMiddleware<T>(VersionValidationOptions<T> options)
         {
             var receiver = new RequestDelegateReceiver();
-            return (new VersionValidationMiddleware(receiver.ReceiveAsync, options), receiver);
+            return (new VersionValidationMiddleware<T>(receiver.ReceiveAsync, options), receiver);
         }
     }
 }

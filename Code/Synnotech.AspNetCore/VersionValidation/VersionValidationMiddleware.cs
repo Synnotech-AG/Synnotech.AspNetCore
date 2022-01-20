@@ -10,13 +10,13 @@ namespace Synnotech.AspNetCore.VersionValidation
     /// Produces 400 if app version header is missing and options are configured to disallow such requests.
     /// Produces 400 if request version validation against app version fails.
     /// </summary>
-    public sealed class VersionValidationMiddleware
+    public sealed class VersionValidationMiddleware<T>
     {
         private readonly RequestDelegate _next;
-        private readonly VersionValidationOptions _options;
+        private readonly VersionValidationOptions<T> _options;
 
 #pragma warning disable CS1591
-        public VersionValidationMiddleware(RequestDelegate next, VersionValidationOptions options)
+        public VersionValidationMiddleware(RequestDelegate next, VersionValidationOptions<T> options)
 #pragma warning restore CS1591
         {
             _next = next;
@@ -40,35 +40,25 @@ namespace Synnotech.AspNetCore.VersionValidation
 
             if (requestVersionHeader.Count > 0)
             {
-                var requestVersion = requestVersionHeader![0];
-                var appVersion = _options.GetAppVersion != null ? _options.GetAppVersion() : TryGetProductVersion();
-
-                if (appVersion != null)
+                var requestVersion = _options.TryParseRequestVersion(requestVersionHeader![0]);
+                if (requestVersion == null)
                 {
-                    var checkVersionError = _options.CompareVersions ?? VersionValidation.ResolveVersionValidationFunc(_options.ValidationMode);
-                    var data = new VersionCompareData(appVersion, requestVersion);
-                    var error = checkVersionError(data);
+                    context.Response.StatusCode = 400;
+                    await context.Response.WriteAsync("Version validation problem: Could parse request version");
+                    return;
+                }
 
-                    if (error != null)
-                    {
-                        context.Response.StatusCode = 400;
-                        await context.Response.WriteAsync("Version validation problem: " + error);
-                        return;
-                    }
+                var compareData = new VersionCompareData<T>(_options.AppVersion, requestVersion);
+                var error = _options.CompareVersions(compareData);
+                if (error != null)
+                {
+                    context.Response.StatusCode = 400;
+                    await context.Response.WriteAsync("Version validation problem: " + error);
+                    return;
                 }
             }
 
             await _next.Invoke(context);
-        }
-
-        private static string? TryGetProductVersion()
-        {
-            var assembly = Assembly.GetEntryAssembly();
-            if (assembly == null)
-                return null;
-
-            var versionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
-            return versionInfo.ProductVersion;
         }
     }
 }

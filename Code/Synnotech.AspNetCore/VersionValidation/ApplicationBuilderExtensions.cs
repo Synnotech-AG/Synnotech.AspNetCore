@@ -13,14 +13,10 @@ public static class ApplicationBuilderExtensions
     /// Configures the host builder to use Version Validation.
     /// </summary>
     /// <param name="app">The application builder that will be manipulated.</param>
-    /// <param name="configureOptions">The action that lets you configure the options used by the middleware.</param>
+    /// <param name="options">The options to customize version validation.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="app"/> is null.</exception>
-    public static IApplicationBuilder UseVersionValidation(this IApplicationBuilder app, Action<VersionValidationOptions>? configureOptions = null)
+    public static IApplicationBuilder UseVersionValidation<T>(this IApplicationBuilder app, VersionValidationOptions<T> options)
     {
-        app.MustNotBeNull();
-        var options = new VersionValidationOptions();
-        configureOptions?.Invoke(options);
-        app.UseMiddleware<VersionValidationMiddleware>(options);
-        return app;
+        return app.MustNotBeNull().UseMiddleware<VersionValidationMiddleware<T>>(options);
     }
 }
