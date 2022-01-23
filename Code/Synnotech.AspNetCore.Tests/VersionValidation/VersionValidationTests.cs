@@ -29,7 +29,7 @@ namespace Synnotech.AspNetCore.Tests.VersionValidation
         [InlineData(VersionValidationMode.AllowNewerOrEqual, "1.0.0", "2.0.0", true, 200)]
         public static async Task VersionValidation_ModeAlgorithmShouldWork(VersionValidationMode mode, string appVersion, string requestVersion, bool shouldRequestBeProcessed, int expectedStatusCode)
         {
-            var options = VersionValidationOptionsProvider.CreateDefaultOptions(Version.Parse(appVersion), mode);
+            var options = VersionValidationOptions<Version>.CreateDefaultOptions(Version.Parse(appVersion), mode);
             options.IsValidationOptional = false;
 
             var (middleware, receiver) = CreateVersionValidationMiddleware(options);
@@ -49,7 +49,7 @@ namespace Synnotech.AspNetCore.Tests.VersionValidation
         [InlineData(false, true, true, 200)]
         public static async Task VersionValidation_CanBeOptional(bool isValidationOptional, bool isRequestVersionSet, bool shouldRequestBeProcessed, int expectedStatusCode)
         {
-            var options = VersionValidationOptionsProvider.CreateDefaultOptions(Version.Parse("1.0.0"), VersionValidationMode.ExactMatch);
+            var options = VersionValidationOptions<Version>.CreateDefaultOptions(Version.Parse("1.0.0"), VersionValidationMode.ExactMatch);
             options.IsValidationOptional = isValidationOptional;
 
             var (middleware, receiver) = CreateVersionValidationMiddleware(options);
@@ -70,7 +70,7 @@ namespace Synnotech.AspNetCore.Tests.VersionValidation
         [InlineData("Foo", "Bar", false, 400)]
         public static async Task VersionValidation_CanHeaderNameBeDifferent(string middlewareHeaderName, string requestHeaderName, bool shouldRequestBeProcessed, int expectedStatusCode)
         {
-            var options = VersionValidationOptionsProvider.CreateDefaultOptions(Version.Parse("1.0.0"), VersionValidationMode.ExactMatch);
+            var options = VersionValidationOptions<Version>.CreateDefaultOptions(Version.Parse("1.0.0"), VersionValidationMode.ExactMatch);
             options.IsValidationOptional = false;
             options.VersionHeaderName = middlewareHeaderName;
 
