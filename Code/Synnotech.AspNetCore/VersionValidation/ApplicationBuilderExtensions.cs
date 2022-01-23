@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Builder;
 namespace Synnotech.AspNetCore.VersionValidation;
 
 /// <summary>
-/// Provides extension methods to add Version Validation to your ASP.NET Core app.
+/// Provides extension methods to add version validation to your ASP.NET Core app.
 /// </summary>
 public static class ApplicationBuilderExtensions
 {
@@ -15,8 +15,6 @@ public static class ApplicationBuilderExtensions
     /// <param name="app">The application builder that will be manipulated.</param>
     /// <param name="options">The options to customize version validation.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="app"/> is null.</exception>
-    public static IApplicationBuilder UseVersionValidation<T>(this IApplicationBuilder app, VersionValidationOptions<T> options)
-    {
-        return app.MustNotBeNull().UseMiddleware<VersionValidationMiddleware<T>>(options);
-    }
+    public static IApplicationBuilder UseVersionValidation<T>(this IApplicationBuilder app, VersionValidationOptions<T> options) =>
+        app.MustNotBeNull().UseMiddleware<VersionValidationMiddleware<T>>(options);
 }
