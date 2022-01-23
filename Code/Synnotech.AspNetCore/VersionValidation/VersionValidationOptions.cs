@@ -58,15 +58,17 @@ public sealed class VersionValidationOptions<T>
     /// named <see cref="VersionHeaderName" />.
     /// </summary>
     public bool IsValidationOptional { get; set; } = false;
-    
+
     /// <summary>
-    /// Creates options using <see cref="Version"/> to validate versions. Validation algorithm is based on <see cref="VersionValidationMode"/>.
+    /// Creates options using <see cref="Version" /> to validate versions. Validation algorithm is based on <see cref="VersionValidationMode" />.
     /// </summary>
     /// <param name="appVersion">The application version.</param>
     /// <param name="mode">The version validation algorithm to compare the app version with the request version.</param>
     /// <returns>Returns the options.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="appVersion"/> is null.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="mode"/> is an invalid value.</exception>
     public static VersionValidationOptions<Version> CreateDefaultOptions(Version appVersion, VersionValidationMode mode) =>
-        new(appVersion,
-            VersionValidation.ResolveVersionValidationFunc(mode),
-            version => Version.TryParse(version, out var parsedVersion) ? parsedVersion : null);
+        new (appVersion,
+             VersionValidation.ResolveVersionValidationFunc(mode),
+             version => Version.TryParse(version, out var parsedVersion) ? parsedVersion : null);
 }
