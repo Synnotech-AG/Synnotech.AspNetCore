@@ -25,6 +25,9 @@
         <PackageReleaseNotes>
 Synnotech.AspNetCore 0.1.0
 -----------------------------
+
+- use Version Validation Middleware to indicate that a client should do a hard reload
+- use the extension methods of LightInjectDependencyInjection to easily add the DI container to your ASP.NET Core app
         </PackageReleaseNotes>
     </PropertyGroup>
 
