@@ -10,7 +10,7 @@
         <Authors>Synnotech AG</Authors>
         <Company>Synnotech AG</Company>
         <Copyright>Copyright © Synnotech AG 2021</Copyright>
-        <Description>Provides extensions for Synnotech ASP.NET Core apps that use LightInject, Serilog, and FluentValidation.</Description>
+        <Description>Provides extensions to easily setup Synnotech ASP.NET Core apps.</Description>
         <TreatWarningsAsErrors Condition="'$(Configuration)' == 'Release'">true</TreatWarningsAsErrors>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <PackageIcon>synnotech-logo.png</PackageIcon>

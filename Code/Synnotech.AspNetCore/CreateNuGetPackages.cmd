@@ -1,0 +1,1 @@
+dotnet pack Synnotech.AspNetCore.csproj --configuration Release /p:ContinuousIntegrationBuild=true
