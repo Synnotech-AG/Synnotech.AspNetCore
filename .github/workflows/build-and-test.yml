@@ -1,0 +1,25 @@
+name: Build and Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.0.x
+    - name: Restore dependencies
+      run: dotnet restore ./Code/Synnotech.AspNetCore.sln
+    - name: Build
+      run: dotnet build ./Code/Synnotech.AspNetCore.sln --no-restore -c Release
+    - name: Test
+      run: dotnet test ./Code/Synnotech.AspNetCore.Tests/Synnotech.AspNetCore.Tests.csproj -c Release --no-build --verbosity normal
